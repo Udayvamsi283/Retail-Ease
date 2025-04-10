@@ -1,0 +1,23 @@
+.main-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-container {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .main-content.sidebar-open {
+    margin-left: 250px;
+  }
+}
