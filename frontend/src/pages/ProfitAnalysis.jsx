@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase/config";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import MetricCard from "../components/profit-analysis/MetricCard";
 import SalesChart from "../components/profit-analysis/SalesChart";
 import TopSellingItems from "../components/profit-analysis/TopSellingItems";
@@ -87,20 +87,94 @@ const ProfitAnalysis = () => {
 
         setInventoryData(inventoryItems);
 
-        // For demo purposes, generate mock sales data if none exists
-        // In a real app, you would fetch this from a sales collection
-        const mockSalesData = generateMockSalesData(inventoryItems, start);
-        setSalesData(mockSalesData);
-
-        // Generate mock transactions
-        const mockTransactions = generateMockTransactions(
-          inventoryItems,
-          start
+        // Fetch receipts
+        const receiptsRef = collection(db, "receipts");
+        const receiptsQuery = query(
+          receiptsRef,
+          where("userId", "==", currentUser.uid),
+          where("timestamp", ">=", start),
+          orderBy("timestamp", "desc")
         );
-        setTransactions(mockTransactions);
+
+        const receiptsSnapshot = await getDocs(receiptsQuery);
+        const receipts = [];
+
+        receiptsSnapshot.forEach((doc) => {
+          const data = doc.data();
+          receipts.push({
+            id: doc.id,
+            ...data,
+            timestamp: data.timestamp?.toDate() || new Date(),
+          });
+        });
+
+        // Process receipts into sales data
+        const salesByDate = {};
+        const itemSales = {};
+        const transactionsList = [];
+
+        receipts.forEach((receipt) => {
+          // Format date for grouping
+          const dateKey = receipt.timestamp.toISOString().split("T")[0];
+
+          // Initialize sales data for this date if it doesn't exist
+          if (!salesByDate[dateKey]) {
+            salesByDate[dateKey] = {
+              date: new Date(dateKey),
+              totalRevenue: 0,
+              totalProfit: 0,
+              itemsSold: [],
+            };
+          }
+
+          // Add receipt total to daily revenue
+          salesByDate[dateKey].totalRevenue += receipt.total;
+          // Estimate profit (30% margin)
+          salesByDate[dateKey].totalProfit += receipt.total * 0.3;
+
+          // Process items in receipt
+          receipt.items.forEach((item) => {
+            // Add to daily items sold
+            salesByDate[dateKey].itemsSold.push({
+              itemId: item.id,
+              name: item.name,
+              quantitySold: item.quantity,
+              revenue: item.subtotal,
+              profit: item.subtotal * 0.3,
+            });
+
+            // Track total sales by item
+            if (!itemSales[item.id]) {
+              itemSales[item.id] = {
+                itemId: item.id,
+                name: item.name,
+                quantitySold: 0,
+                revenue: 0,
+                profit: 0,
+              };
+            }
+            itemSales[item.id].quantitySold += item.quantity;
+            itemSales[item.id].revenue += item.subtotal;
+            itemSales[item.id].profit += item.subtotal * 0.3;
+          });
+
+          // Add to transactions list
+          transactionsList.push({
+            id: receipt.id,
+            date: receipt.timestamp,
+            items: receipt.items,
+            total: receipt.total,
+            type: "sale",
+          });
+        });
+
+        // Convert salesByDate object to array
+        const salesDataArray = Object.values(salesByDate);
+        setSalesData(salesDataArray);
+        setTransactions(transactionsList);
 
         // Calculate metrics
-        calculateMetrics(mockSalesData, inventoryItems);
+        calculateMetrics(salesDataArray, itemSales, inventoryItems);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load analytics data");
@@ -112,147 +186,56 @@ const ProfitAnalysis = () => {
     fetchData();
   }, [currentUser, timeFilter]);
 
-  // Generate mock sales data for demonstration
-  const generateMockSalesData = (items, startDate) => {
-    if (!items.length) return [];
-
-    const salesData = [];
-    const endDate = new Date();
-    const currentDate = new Date(startDate);
-
-    // Generate daily sales data
-    while (currentDate <= endDate) {
-      const dailySales = {
-        date: new Date(currentDate),
-        totalRevenue: 0,
-        totalProfit: 0,
-        itemsSold: [],
-      };
-
-      // Generate random sales for each item
-      items.forEach((item) => {
-        const quantitySold = Math.floor(Math.random() * 5); // 0-4 items sold per day
-        if (quantitySold > 0) {
-          const revenue = quantitySold * item.price;
-          const profit = revenue * 0.3; // Assume 30% profit margin
-
-          dailySales.totalRevenue += revenue;
-          dailySales.totalProfit += profit;
-          dailySales.itemsSold.push({
-            itemId: item.id,
-            name: item.name,
-            quantitySold,
-            revenue,
-            profit,
-            imageUrl: item.imageUrl,
-          });
-        }
-      });
-
-      salesData.push(dailySales);
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return salesData;
-  };
-
-  // Generate mock transactions for demonstration
-  const generateMockTransactions = (items, startDate) => {
-    if (!items.length) return [];
-
-    const transactions = [];
-    const endDate = new Date();
-    const currentDate = new Date(startDate);
-
-    // Generate 15 random transactions
-    for (let i = 0; i < 15; i++) {
-      const randomItem = items[Math.floor(Math.random() * items.length)];
-      const randomDate = new Date(
-        startDate.getTime() +
-          Math.random() * (endDate.getTime() - startDate.getTime())
-      );
-      const quantitySold = Math.floor(Math.random() * 5) + 1; // 1-5 items
-
-      transactions.push({
-        id: `trans-${i}`,
-        itemId: randomItem.id,
-        itemName: randomItem.name,
-        quantitySold,
-        revenue: quantitySold * randomItem.price,
-        date: randomDate,
-        type: Math.random() > 0.3 ? "sale" : "restock", // 70% sales, 30% restocks
-      });
-    }
-
-    // Sort by date, newest first
-    return transactions.sort((a, b) => b.date - a.date);
-  };
-
   // Calculate metrics from sales data
-  const calculateMetrics = (salesData, inventoryItems) => {
+  const calculateMetrics = (salesData, itemSales, inventoryItems) => {
     // Calculate total revenue and profit
     let totalRev = 0;
     let totalProfit = 0;
-    const itemSalesMap = new Map();
 
     salesData.forEach((day) => {
       totalRev += day.totalRevenue;
       totalProfit += day.totalProfit;
-
-      day.itemsSold.forEach((item) => {
-        if (itemSalesMap.has(item.itemId)) {
-          const existing = itemSalesMap.get(item.itemId);
-          itemSalesMap.set(item.itemId, {
-            ...existing,
-            quantitySold: existing.quantitySold + item.quantitySold,
-            revenue: existing.revenue + item.revenue,
-            profit: existing.profit + item.profit,
-          });
-        } else {
-          itemSalesMap.set(item.itemId, {
-            itemId: item.itemId,
-            name: item.name,
-            quantitySold: item.quantitySold,
-            revenue: item.revenue,
-            profit: item.profit,
-            imageUrl: item.imageUrl,
-          });
-        }
-      });
     });
 
     setTotalRevenue(totalRev);
     setEstimatedProfit(totalProfit);
 
     // Find best selling and slow moving items
-    if (itemSalesMap.size > 0) {
-      const itemSalesArray = Array.from(itemSalesMap.values());
+    const itemSalesArray = Object.values(itemSales);
 
+    if (itemSalesArray.length > 0) {
       // Sort by quantity sold (descending)
       const sortedItems = [...itemSalesArray].sort(
         (a, b) => b.quantitySold - a.quantitySold
       );
 
+      // Find best selling item
       setBestSellingItem(sortedItems[0] || null);
+
+      // Find slow moving item
       setSlowMovingItem(sortedItems[sortedItems.length - 1] || null);
 
       // Get top 5 selling items
       setTopSellingItems(sortedItems.slice(0, 5));
+    } else {
+      setBestSellingItem(null);
+      setSlowMovingItem(null);
+      setTopSellingItems([]);
     }
 
     // Generate insights
-    generateInsights(salesData, itemSalesMap);
+    generateInsights(salesData, itemSalesArray, inventoryItems);
   };
 
   // Generate business insights
-  const generateInsights = (salesData, itemSalesMap) => {
+  const generateInsights = (salesData, itemSalesArray, inventoryItems) => {
     const insights = [];
 
     // Compare recent sales with previous period
     if (salesData.length > 0) {
       const midpoint = Math.floor(salesData.length / 2);
-      const recentPeriod = salesData.slice(midpoint);
-      const previousPeriod = salesData.slice(0, midpoint);
+      const recentPeriod = salesData.slice(0, midpoint);
+      const previousPeriod = salesData.slice(midpoint);
 
       const recentRevenue = recentPeriod.reduce(
         (sum, day) => sum + day.totalRevenue,
@@ -295,10 +278,18 @@ const ProfitAnalysis = () => {
     }
 
     // Low stock warning (using inventory data)
-    const lowStockItems = inventoryData.filter((item) => item.quantity < 5);
+    const lowStockItems = inventoryItems.filter((item) => item.quantity < 5);
     if (lowStockItems.length > 0) {
       insights.push(
         `You have ${lowStockItems.length} items with low stock. Consider restocking soon.`
+      );
+    }
+
+    // Average transaction value
+    if (transactions.length > 0) {
+      const avgValue = totalRevenue / transactions.length;
+      insights.push(
+        `Your average transaction value is ₹${avgValue.toFixed(2)}.`
       );
     }
 
@@ -372,7 +363,6 @@ const ProfitAnalysis = () => {
               }
               icon={<FaBoxOpen />}
               color="secondary"
-              imageUrl={bestSellingItem?.imageUrl}
             />
 
             <MetricCard

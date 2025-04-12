@@ -4,7 +4,14 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase/config";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { FaBoxOpen, FaChartLine, FaRobot, FaCog } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaChartLine,
+  FaRobot,
+  FaCog,
+  FaCashRegister,
+  FaReceipt,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "../styles/Dashboard.css";
 
@@ -136,10 +143,36 @@ const Dashboard = () => {
           </div>
         </Link>
 
-        <Link to="/profit-analysis" className="action-card">
+        <Link to="/billing" className="action-card">
           <div
             className="action-icon"
             style={{ backgroundColor: "var(--secondary)" }}
+          >
+            <FaCashRegister />
+          </div>
+          <div className="action-content">
+            <h3>Billing</h3>
+            <p>Create bills and process sales</p>
+          </div>
+        </Link>
+
+        <Link to="/receipts" className="action-card">
+          <div
+            className="action-icon"
+            style={{ backgroundColor: "var(--accent)" }}
+          >
+            <FaReceipt />
+          </div>
+          <div className="action-content">
+            <h3>Receipts</h3>
+            <p>View and manage sales receipts</p>
+          </div>
+        </Link>
+
+        <Link to="/profit-analysis" className="action-card">
+          <div
+            className="action-icon"
+            style={{ backgroundColor: "var(--highlight)" }}
           >
             <FaChartLine />
           </div>

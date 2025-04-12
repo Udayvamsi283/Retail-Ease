@@ -12,6 +12,8 @@ import Inventory from "./pages/Inventory";
 import ProfitAnalysis from "./pages/ProfitAnalysis";
 import AIBusinessHelp from "./pages/AIBusinessHelp";
 import Settings from "./pages/Settings";
+import Billing from "./pages/Billing";
+import Receipts from "./pages/Receipts";
 import MainLayout from "./components/MainLayout";
 
 // Protected route component
@@ -109,6 +111,28 @@ function App() {
           <ProtectedRoute>
             <MainLayout>
               <Settings />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/billing"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Billing />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/receipts"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Receipts />
             </MainLayout>
           </ProtectedRoute>
         }

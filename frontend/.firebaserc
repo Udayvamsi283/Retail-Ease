@@ -1,5 +1,10 @@
 {
   "projects": {
-    "default": "retailease-a45f0"
-  }
+    "default": "retailease-a45f0",
+    "retailease": "retailease-a45f0",
+    "defaul": "retailease-a45f0",
+    "retailease-a45f0": "retailease-a45f0"
+  },
+  "targets": {},
+  "etags": {}
 }

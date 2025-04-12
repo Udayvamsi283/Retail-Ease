@@ -1,8 +1,17 @@
-"use client"
+"use client";
 
-import { NavLink } from "react-router-dom"
-import { FaBoxOpen, FaChartLine, FaRobot, FaCog, FaSignOutAlt, FaTimes } from "react-icons/fa"
-import "../styles/Sidebar.css"
+import { NavLink } from "react-router-dom";
+import {
+  FaBoxOpen,
+  FaChartLine,
+  FaRobot,
+  FaCog,
+  FaSignOutAlt,
+  FaTimes,
+  FaReceipt,
+  FaCashRegister,
+} from "react-icons/fa";
+import "../styles/Sidebar.css";
 
 const Sidebar = ({ isOpen, toggleSidebar, onLogout }) => {
   return (
@@ -18,7 +27,9 @@ const Sidebar = ({ isOpen, toggleSidebar, onLogout }) => {
           <li className="sidebar-item">
             <NavLink
               to="/inventory"
-              className={({ isActive }) => (isActive ? "sidebar-link active" : "sidebar-link")}
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
+              }
               onClick={() => toggleSidebar()}
             >
               <FaBoxOpen className="sidebar-icon" />
@@ -28,8 +39,36 @@ const Sidebar = ({ isOpen, toggleSidebar, onLogout }) => {
 
           <li className="sidebar-item">
             <NavLink
+              to="/billing"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
+              }
+              onClick={() => toggleSidebar()}
+            >
+              <FaCashRegister className="sidebar-icon" />
+              <span>Billing</span>
+            </NavLink>
+          </li>
+
+          <li className="sidebar-item">
+            <NavLink
+              to="/receipts"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
+              }
+              onClick={() => toggleSidebar()}
+            >
+              <FaReceipt className="sidebar-icon" />
+              <span>Receipts</span>
+            </NavLink>
+          </li>
+
+          <li className="sidebar-item">
+            <NavLink
               to="/profit-analysis"
-              className={({ isActive }) => (isActive ? "sidebar-link active" : "sidebar-link")}
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
+              }
               onClick={() => toggleSidebar()}
             >
               <FaChartLine className="sidebar-icon" />
@@ -40,7 +79,9 @@ const Sidebar = ({ isOpen, toggleSidebar, onLogout }) => {
           <li className="sidebar-item">
             <NavLink
               to="/ai-business-help"
-              className={({ isActive }) => (isActive ? "sidebar-link active" : "sidebar-link")}
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
+              }
               onClick={() => toggleSidebar()}
             >
               <FaRobot className="sidebar-icon" />
@@ -50,8 +91,10 @@ const Sidebar = ({ isOpen, toggleSidebar, onLogout }) => {
 
           <li className="sidebar-item">
             <NavLink
-              to="/settings"
-              className={({ isActive }) => (isActive ? "sidebar-link active" : "sidebar-link")}
+              to="/settings/profile"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
+              }
               onClick={() => toggleSidebar()}
             >
               <FaCog className="sidebar-icon" />
@@ -68,7 +111,7 @@ const Sidebar = ({ isOpen, toggleSidebar, onLogout }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;
