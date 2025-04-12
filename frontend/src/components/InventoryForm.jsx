@@ -14,7 +14,8 @@ const InventoryForm = ({
   const [formData, setFormData] = useState({
     name: "",
     quantity: 0,
-    price: 0,
+    costPrice: 0,
+    sellingPrice: 0,
     expiryDate: "",
     category: "",
     barcode: "",
@@ -32,7 +33,8 @@ const InventoryForm = ({
       setFormData({
         name: editItem.name || "",
         quantity: editItem.quantity || 0,
-        price: editItem.price || 0,
+        costPrice: editItem.costPrice || 0,
+        sellingPrice: editItem.sellingPrice || editItem.price || 0,
         expiryDate: editItem.expiryDate
           ? new Date(editItem.expiryDate.seconds * 1000)
               .toISOString()
@@ -81,11 +83,26 @@ const InventoryForm = ({
     setLoading(true);
 
     try {
+      // Validate prices
+      if (formData.costPrice <= 0) {
+        setError("Cost price must be greater than zero");
+        setLoading(false);
+        return;
+      }
+
+      if (formData.sellingPrice <= 0) {
+        setError("Selling price must be greater than zero");
+        setLoading(false);
+        return;
+      }
+
       // Prepare data
       const itemData = {
         name: formData.name,
         quantity: formData.quantity,
-        price: formData.price,
+        costPrice: formData.costPrice,
+        sellingPrice: formData.sellingPrice,
+        price: formData.sellingPrice, // Keep price field for backward compatibility
         expiryDate: formData.expiryDate ? new Date(formData.expiryDate) : null,
         category:
           formData.category === "new"
@@ -144,7 +161,8 @@ const InventoryForm = ({
     setFormData({
       name: "",
       quantity: 0,
-      price: 0,
+      costPrice: 0,
+      sellingPrice: 0,
       expiryDate: "",
       category: "",
       barcode: "",
@@ -205,17 +223,39 @@ const InventoryForm = ({
           </div>
 
           <div className="form-group">
-            <label htmlFor="price">Price (₹)*</label>
+            <label htmlFor="costPrice">Cost Price (₹)*</label>
             <input
               type="number"
-              id="price"
-              name="price"
-              value={formData.price}
+              id="costPrice"
+              name="costPrice"
+              value={formData.costPrice}
               onChange={handleChange}
               required
-              min="0"
+              min="0.01"
               step="0.01"
+              placeholder="Purchase price"
             />
+            <small className="form-hint">
+              Price at which you purchased the item
+            </small>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="sellingPrice">Selling Price (₹)*</label>
+            <input
+              type="number"
+              id="sellingPrice"
+              name="sellingPrice"
+              value={formData.sellingPrice}
+              onChange={handleChange}
+              required
+              min="0.01"
+              step="0.01"
+              placeholder="Retail price"
+            />
+            <small className="form-hint">
+              Price at which you sell to customers
+            </small>
           </div>
 
           <div className="form-group">
@@ -289,12 +329,15 @@ const InventoryForm = ({
                 type="file"
                 id="image"
                 accept="image/*"
+                capture="environment"
                 onChange={handleImageChange}
                 className="image-input"
               />
               <label htmlFor="image" className="image-label">
                 <FaCamera className="camera-icon" />
-                <span>{imageFile ? "Change Image" : "Upload Image"}</span>
+                <span>
+                  {imageFile ? "Change Image" : "Upload Image / Take Photo"}
+                </span>
               </label>
 
               {imagePreview && (

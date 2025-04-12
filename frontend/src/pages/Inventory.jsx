@@ -157,10 +157,10 @@ const Inventory = () => {
   const handleSortChange = (e) => {
     const value = e.target.value;
     if (value === "price-asc") {
-      setSortOption("price");
+      setSortOption("sellingPrice");
       setSortDirection("asc");
     } else if (value === "price-desc") {
-      setSortOption("price");
+      setSortOption("sellingPrice");
       setSortDirection("desc");
     } else if (value === "expiry-asc") {
       setSortOption("expiryDate");
@@ -182,8 +182,10 @@ const Inventory = () => {
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
-      if (sortOption === "price") {
-        return sortDirection === "asc" ? a.price - b.price : b.price - a.price;
+      if (sortOption === "sellingPrice" || sortOption === "price") {
+        const aPrice = a.sellingPrice || a.price || 0;
+        const bPrice = b.sellingPrice || b.price || 0;
+        return sortDirection === "asc" ? aPrice - bPrice : bPrice - aPrice;
       } else if (sortOption === "expiryDate") {
         if (!a.expiryDate && !b.expiryDate) return 0;
         if (!a.expiryDate) return 1;
@@ -277,7 +279,7 @@ const Inventory = () => {
 
           <select
             value={
-              sortOption === "price"
+              sortOption === "sellingPrice" || sortOption === "price"
                 ? `price-${sortDirection}`
                 : sortOption === "expiryDate"
                 ? "expiry-asc"

@@ -13,6 +13,7 @@ import ProfitAnalysis from "./pages/ProfitAnalysis";
 import AIBusinessHelp from "./pages/AIBusinessHelp";
 import Settings from "./pages/Settings";
 import ExpiryInsights from "./pages/ExpiryInsights";
+import NearbyNGOs from "./pages/NearbyNGOs";
 import Billing from "./pages/Billing";
 import Receipts from "./pages/Receipts";
 import MainLayout from "./components/MainLayout";
@@ -115,7 +116,16 @@ function App() {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/nearby-ngos"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <NearbyNGOs />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/settings/:section"
         element={

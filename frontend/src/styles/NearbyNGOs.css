@@ -1,0 +1,157 @@
+.nearby-ngos-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.page-description {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+
+.description-icon {
+  font-size: 24px;
+  color: var(--primary);
+  margin-top: 2px;
+}
+
+.page-description p {
+  margin: 0;
+  color: var(--dark-gray);
+  line-height: 1.5;
+}
+
+.ngos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.ngo-card {
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease;
+}
+
+.ngo-card:hover {
+  transform: translateY(-5px);
+}
+
+.ngo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.ngo-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.ngo-type {
+  background-color: var(--accent);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.ngo-description {
+  color: var(--dark-gray);
+  margin-bottom: 16px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.ngo-details {
+  border-top: 1px solid var(--light-gray);
+  padding-top: 16px;
+  margin-bottom: 16px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.detail-icon {
+  color: var(--secondary);
+  font-size: 16px;
+  margin-top: 3px;
+}
+
+.detail-item p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.ngo-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none;
+}
+
+.phone-btn {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.phone-btn:hover {
+  background-color: #c91c1c;
+}
+
+.email-btn {
+  background-color: var(--secondary);
+  color: var(--white);
+}
+
+.email-btn:hover {
+  background-color: #e99615;
+}
+
+@media (min-width: 640px) {
+  .ngos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ngos-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -31,6 +31,10 @@ const Navbar = ({ toggleSidebar }) => {
     navigate("/settings/profile");
   };
 
+  const handleLogoClick = () => {
+    navigate("/dashboard");
+  };
+
   // Fetch expiring items
   useEffect(() => {
     if (!currentUser) return;
@@ -98,7 +102,7 @@ const Navbar = ({ toggleSidebar }) => {
           <button className="menu-button" onClick={toggleSidebar}>
             <FaBars />
           </button>
-          <div className="navbar-logo">
+          <div className="navbar-logo" onClick={handleLogoClick}>
             <FaShoppingCart className="logo-icon" />
             <span className="logo-text">Retail Ease</span>
           </div>

@@ -11,6 +11,7 @@ import {
   FaReceipt,
   FaCashRegister,
   FaCalendarAlt,
+  FaHandHoldingHeart,
 } from "react-icons/fa";
 import "../styles/Sidebar.css";
 
@@ -74,6 +75,19 @@ const Sidebar = ({ isOpen, toggleSidebar, onLogout }) => {
             >
               <FaCalendarAlt className="sidebar-icon" />
               <span>Expiry Insights</span>
+            </NavLink>
+          </li>
+
+          <li className="sidebar-item">
+            <NavLink
+              to="/nearby-ngos"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
+              }
+              onClick={() => toggleSidebar()}
+            >
+              <FaHandHoldingHeart className="sidebar-icon" />
+              <span>Nearby NGOs</span>
             </NavLink>
           </li>
 

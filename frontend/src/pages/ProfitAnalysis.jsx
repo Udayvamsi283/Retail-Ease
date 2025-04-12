@@ -129,18 +129,26 @@ const ProfitAnalysis = () => {
 
           // Add receipt total to daily revenue
           salesByDate[dateKey].totalRevenue += receipt.total;
-          // Estimate profit (30% margin)
-          salesByDate[dateKey].totalProfit += receipt.total * 0.3;
 
           // Process items in receipt
           receipt.items.forEach((item) => {
+            // Find the inventory item to get cost price
+            const inventoryItem = inventoryItems.find(
+              (invItem) => invItem.id === item.id
+            );
+            const costPrice = inventoryItem?.costPrice || item.price * 0.7; // Default to 30% margin if not found
+            const profit = (item.price - costPrice) * item.quantity;
+
+            // Add profit to daily total
+            salesByDate[dateKey].totalProfit += profit;
+
             // Add to daily items sold
             salesByDate[dateKey].itemsSold.push({
               itemId: item.id,
               name: item.name,
               quantitySold: item.quantity,
               revenue: item.subtotal,
-              profit: item.subtotal * 0.3,
+              profit: profit,
             });
 
             // Track total sales by item
@@ -155,7 +163,7 @@ const ProfitAnalysis = () => {
             }
             itemSales[item.id].quantitySold += item.quantity;
             itemSales[item.id].revenue += item.subtotal;
-            itemSales[item.id].profit += item.subtotal * 0.3;
+            itemSales[item.id].profit += profit;
           });
 
           // Add to transactions list
