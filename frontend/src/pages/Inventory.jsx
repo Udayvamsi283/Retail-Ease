@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { db, storage } from "../firebase/config";
+import { db } from "../firebase/config";
 import {
   collection,
   addDoc,
@@ -14,7 +14,6 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FaSearch } from "react-icons/fa";
 import InventoryForm from "../components/InventoryForm";
 import InventoryList from "../components/InventoryList";
@@ -77,19 +76,14 @@ const Inventory = () => {
     return unsubscribe;
   }, [currentUser]);
 
-  // Add new item
+  // Replace the handleAddItem function with this updated version that uses Cloudinary
   const handleAddItem = async (itemData, imageFile) => {
     try {
       let imageUrl = null;
 
-      // Upload image if provided
+      // Upload image to Cloudinary if provided
       if (imageFile) {
-        const storageRef = ref(
-          storage,
-          `inventory/${currentUser.uid}/${Date.now()}_${imageFile.name}`
-        );
-        await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(storageRef);
+        imageUrl = await uploadImageToCloudinary(imageFile);
       }
 
       // Add document to Firestore
@@ -107,19 +101,14 @@ const Inventory = () => {
     }
   };
 
-  // Update existing item
+  // Replace the handleUpdateItem function with this updated version
   const handleUpdateItem = async (id, itemData, imageFile) => {
     try {
       let imageUrl = itemData.imageUrl;
 
-      // Upload new image if provided
+      // Upload new image to Cloudinary if provided
       if (imageFile) {
-        const storageRef = ref(
-          storage,
-          `inventory/${currentUser.uid}/${Date.now()}_${imageFile.name}`
-        );
-        await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(storageRef);
+        imageUrl = await uploadImageToCloudinary(imageFile);
       }
 
       // Update document in Firestore
@@ -219,6 +208,33 @@ const Inventory = () => {
     acc[category].push(item);
     return acc;
   }, {});
+
+  // Add the Cloudinary upload function
+  const uploadImageToCloudinary = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "retailease_unsigned");
+
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dsqoz1bfm/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Upload failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.secure_url; // Return the secure URL to save in Firestore
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      throw new Error("Image upload failed. Please try again.");
+    }
+  };
 
   return (
     <div className="inventory-page">

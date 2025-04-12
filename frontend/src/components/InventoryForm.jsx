@@ -87,7 +87,6 @@ const InventoryForm = ({
         quantity: formData.quantity,
         price: formData.price,
         expiryDate: formData.expiryDate ? new Date(formData.expiryDate) : null,
-        // Fix the category bug here
         category:
           formData.category === "new"
             ? formData.newCategory
@@ -97,6 +96,12 @@ const InventoryForm = ({
 
       // If editing, update the item
       if (editItem) {
+        if (imageFile) {
+          setLoading(true);
+          // Show uploading message
+          setSuccess("Uploading image...");
+        }
+
         const result = await onUpdate(
           editItem.id,
           { ...itemData, imageUrl: editItem.imageUrl },
@@ -112,6 +117,12 @@ const InventoryForm = ({
       }
       // Otherwise, add a new item
       else {
+        if (imageFile) {
+          setLoading(true);
+          // Show uploading message
+          setSuccess("Uploading image...");
+        }
+
         const result = await onSubmit(itemData, imageFile);
 
         if (result.success) {
