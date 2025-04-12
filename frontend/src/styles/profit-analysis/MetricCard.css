@@ -1,0 +1,165 @@
+.metric-card {
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  overflow: hidden;
+  position: relative;
+}
+
+.metric-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.metric-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.metric-card.primary::before {
+  background-color: var(--primary);
+}
+
+.metric-card.secondary::before {
+  background-color: var(--secondary);
+}
+
+.metric-card.accent::before {
+  background-color: var(--accent);
+}
+
+.metric-card.highlight::before {
+  background-color: var(--highlight);
+}
+
+.metric-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.primary .metric-icon {
+  background-color: rgba(229, 32, 32, 0.1);
+  color: var(--primary);
+}
+
+.secondary .metric-icon {
+  background-color: rgba(251, 165, 24, 0.1);
+  color: var(--secondary);
+}
+
+.accent .metric-icon {
+  background-color: rgba(249, 203, 67, 0.1);
+  color: var(--accent);
+}
+
+.highlight .metric-icon {
+  background-color: rgba(168, 156, 41, 0.1);
+  color: var(--highlight);
+}
+
+.metric-content {
+  flex: 1;
+}
+
+.metric-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dark-gray);
+  margin: 0 0 8px 0;
+}
+
+.metric-value-container {
+  position: relative;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.primary .metric-value {
+  color: var(--primary);
+}
+
+.secondary .metric-value {
+  color: var(--secondary);
+}
+
+.accent .metric-value {
+  color: var(--accent);
+}
+
+.highlight .metric-value {
+  color: var(--highlight);
+}
+
+.metric-subvalue {
+  font-size: 14px;
+  color: var(--dark-gray);
+  margin: 4px 0 0 0;
+}
+
+.metric-with-image {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.metric-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.metric-alt-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--light-gray);
+  border-radius: 12px;
+  padding: 4px 8px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.alt-label {
+  color: var(--dark-gray);
+}
+
+.alt-value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+@media (min-width: 768px) {
+  .metric-value {
+    font-size: 28px;
+  }
+}

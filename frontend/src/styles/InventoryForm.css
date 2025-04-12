@@ -115,6 +115,37 @@
   min-width: 100px;
 }
 
+/* Add these styles for the barcode scanner button */
+.scan-barcode-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: var(--secondary);
+  color: var(--white);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none;
+  font-weight: 500;
+}
+
+.scan-barcode-btn:hover {
+  background-color: #e99615;
+}
+
+.barcode-icon {
+  font-size: 18px;
+}
+
+.barcode-result {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: var(--light-gray);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
 @media (min-width: 768px) {
   .form-grid {
     grid-template-columns: repeat(2, 1fr);

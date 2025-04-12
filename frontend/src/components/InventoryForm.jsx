@@ -1,10 +1,16 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { FaCamera } from "react-icons/fa"
-import "../styles/InventoryForm.css"
+import { useState, useEffect } from "react";
+import { FaCamera, FaBarcode } from "react-icons/fa";
+import "../styles/InventoryForm.css";
 
-const InventoryForm = ({ onSubmit, onUpdate, editItem, setEditItem, categories }) => {
+const InventoryForm = ({
+  onSubmit,
+  onUpdate,
+  editItem,
+  setEditItem,
+  categories,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     quantity: 0,
@@ -13,12 +19,12 @@ const InventoryForm = ({ onSubmit, onUpdate, editItem, setEditItem, categories }
     category: "",
     barcode: "",
     newCategory: "",
-  })
-  const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setImagePreview] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
+  });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   // Set form data when editing an item
   useEffect(() => {
@@ -27,48 +33,52 @@ const InventoryForm = ({ onSubmit, onUpdate, editItem, setEditItem, categories }
         name: editItem.name || "",
         quantity: editItem.quantity || 0,
         price: editItem.price || 0,
-        expiryDate: editItem.expiryDate ? new Date(editItem.expiryDate.seconds * 1000).toISOString().split("T")[0] : "",
+        expiryDate: editItem.expiryDate
+          ? new Date(editItem.expiryDate.seconds * 1000)
+              .toISOString()
+              .split("T")[0]
+          : "",
         category: editItem.category || "",
         barcode: editItem.barcode || "",
         newCategory: "",
-      })
+      });
 
       if (editItem.imageUrl) {
-        setImagePreview(editItem.imageUrl)
+        setImagePreview(editItem.imageUrl);
       } else {
-        setImagePreview(null)
+        setImagePreview(null);
       }
     }
-  }, [editItem])
+  }, [editItem]);
 
   const handleChange = (e) => {
-    const { name, value, type } = e.target
+    const { name, value, type } = e.target;
 
     setFormData((prev) => ({
       ...prev,
       [name]: type === "number" ? Number.parseFloat(value) || 0 : value,
-    }))
-  }
+    }));
+  };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    if (!file) return
+    const file = e.target.files[0];
+    if (!file) return;
 
-    setImageFile(file)
+    setImageFile(file);
 
     // Create preview
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result)
-    }
-    reader.readAsDataURL(file)
-  }
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError("")
-    setSuccess("")
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
 
     try {
       // Prepare data
@@ -77,39 +87,47 @@ const InventoryForm = ({ onSubmit, onUpdate, editItem, setEditItem, categories }
         quantity: formData.quantity,
         price: formData.price,
         expiryDate: formData.expiryDate ? new Date(formData.expiryDate) : null,
-        category: formData.category || (formData.newCategory ? formData.newCategory : "Uncategorized"),
+        // Fix the category bug here
+        category:
+          formData.category === "new"
+            ? formData.newCategory
+            : formData.category || "Uncategorized",
         barcode: formData.barcode,
-      }
+      };
 
       // If editing, update the item
       if (editItem) {
-        const result = await onUpdate(editItem.id, { ...itemData, imageUrl: editItem.imageUrl }, imageFile)
+        const result = await onUpdate(
+          editItem.id,
+          { ...itemData, imageUrl: editItem.imageUrl },
+          imageFile
+        );
 
         if (result.success) {
-          setSuccess("Item updated successfully!")
-          resetForm()
+          setSuccess("Item updated successfully!");
+          resetForm();
         } else {
-          setError(result.error || "Failed to update item")
+          setError(result.error || "Failed to update item");
         }
       }
       // Otherwise, add a new item
       else {
-        const result = await onSubmit(itemData, imageFile)
+        const result = await onSubmit(itemData, imageFile);
 
         if (result.success) {
-          setSuccess("Item added successfully!")
-          resetForm()
+          setSuccess("Item added successfully!");
+          resetForm();
         } else {
-          setError(result.error || "Failed to add item")
+          setError(result.error || "Failed to add item");
         }
       }
     } catch (error) {
-      console.error("Error in form submission:", error)
-      setError("An unexpected error occurred")
+      console.error("Error in form submission:", error);
+      setError("An unexpected error occurred");
     }
 
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -120,11 +138,24 @@ const InventoryForm = ({ onSubmit, onUpdate, editItem, setEditItem, categories }
       category: "",
       barcode: "",
       newCategory: "",
-    })
-    setImageFile(null)
-    setImagePreview(null)
-    setEditItem(null)
-  }
+    });
+    setImageFile(null);
+    setImagePreview(null);
+    setEditItem(null);
+  };
+
+  const handleScanBarcode = () => {
+    // Placeholder for QuaggaJS integration
+    alert(
+      "Barcode scanner will be integrated with QuaggaJS in the future. This is a placeholder."
+    );
+
+    // For now, just set a dummy barcode
+    setFormData((prev) => ({
+      ...prev,
+      barcode: "SCAN" + Math.floor(Math.random() * 1000000),
+    }));
+  };
 
   return (
     <div className="inventory-form-container">
@@ -178,12 +209,23 @@ const InventoryForm = ({ onSubmit, onUpdate, editItem, setEditItem, categories }
 
           <div className="form-group">
             <label htmlFor="expiryDate">Expiry Date</label>
-            <input type="date" id="expiryDate" name="expiryDate" value={formData.expiryDate} onChange={handleChange} />
+            <input
+              type="date"
+              id="expiryDate"
+              name="expiryDate"
+              value={formData.expiryDate}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="category">Category</label>
-            <select id="category" name="category" value={formData.category} onChange={handleChange}>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+            >
               <option value="">Select Category</option>
               {categories.map((category) => (
                 <option key={category} value={category}>
@@ -209,21 +251,32 @@ const InventoryForm = ({ onSubmit, onUpdate, editItem, setEditItem, categories }
           )}
 
           <div className="form-group">
-            <label htmlFor="barcode">Barcode (Optional)</label>
-            <input
-              type="text"
-              id="barcode"
-              name="barcode"
-              value={formData.barcode}
-              onChange={handleChange}
-              placeholder="Enter barcode"
-            />
+            <label htmlFor="barcode">Barcode</label>
+            <button
+              type="button"
+              className="scan-barcode-btn"
+              onClick={handleScanBarcode}
+            >
+              <FaBarcode className="barcode-icon" />
+              <span>Scan Barcode</span>
+            </button>
+            {formData.barcode && (
+              <div className="barcode-result">
+                <span>Barcode: {formData.barcode}</span>
+              </div>
+            )}
           </div>
 
           <div className="form-group image-upload-group">
             <label>Item Image</label>
             <div className="image-upload">
-              <input type="file" id="image" accept="image/*" onChange={handleImageChange} className="image-input" />
+              <input
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="image-input"
+              />
               <label htmlFor="image" className="image-label">
                 <FaCamera className="camera-icon" />
                 <span>{imageFile ? "Change Image" : "Upload Image"}</span>
@@ -240,18 +293,26 @@ const InventoryForm = ({ onSubmit, onUpdate, editItem, setEditItem, categories }
 
         <div className="form-actions">
           {editItem && (
-            <button type="button" className="outline-btn cancel-btn" onClick={resetForm}>
+            <button
+              type="button"
+              className="outline-btn cancel-btn"
+              onClick={resetForm}
+            >
               Cancel
             </button>
           )}
 
-          <button type="submit" className="primary-btn submit-btn" disabled={loading}>
+          <button
+            type="submit"
+            className="primary-btn submit-btn"
+            disabled={loading}
+          >
             {loading ? "Processing..." : editItem ? "Update Item" : "Add Item"}
           </button>
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default InventoryForm
+export default InventoryForm;

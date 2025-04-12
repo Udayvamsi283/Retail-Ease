@@ -1,9 +1,9 @@
 .inventory-list {
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .list-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 16px;
@@ -18,29 +18,43 @@
   box-shadow: var(--shadow);
 }
 
+.category-section {
+  margin-bottom: 24px;
+}
+
+.category-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dark-gray);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
 .item-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
 
 .item-card {
   background-color: var(--white);
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
 }
 
 .item-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .item-image {
-  height: 180px;
+  height: 120px;
   overflow: hidden;
   background-color: var(--light-gray);
 }
@@ -58,29 +72,35 @@
   align-items: center;
   justify-content: center;
   color: var(--dark-gray);
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .item-details {
-  padding: 16px;
+  padding: 10px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .item-name {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 12px;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .item-info {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+  font-size: 12px;
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .info-label {
@@ -92,28 +112,40 @@
   color: var(--text);
 }
 
+.price-tag {
+  font-weight: 600;
+  color: var(--primary);
+}
+
 .expiring-soon {
   color: var(--primary);
   font-weight: 500;
 }
 
+.item-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
 .quantity-control {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 12px;
+  gap: 6px;
 }
 
 .quantity-btn {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 4px;
   background-color: var(--light-gray);
   color: var(--text);
   transition: all 0.3s ease;
+  font-size: 10px;
 }
 
 .quantity-btn:hover:not(:disabled) {
@@ -136,34 +168,30 @@
 }
 
 .quantity-value {
-  font-size: 18px;
+  font-size: 12px;
   font-weight: 600;
-  min-width: 40px;
-  text-align: center;
 }
 
 .low-stock {
   color: var(--primary);
 }
 
-.item-actions {
+.action-buttons {
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid var(--light-gray);
+  gap: 6px;
 }
 
 .action-btn {
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 4px;
   background-color: var(--light-gray);
   color: var(--text);
   transition: all 0.3s ease;
+  font-size: 10px;
 }
 
 .edit-btn:hover {
@@ -176,14 +204,41 @@
   color: var(--white);
 }
 
-@media (min-width: 640px) {
+@media (min-width: 480px) {
   .item-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 640px) {
   .item-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .item-name {
+    font-size: 16px;
+  }
+
+  .item-info {
+    font-size: 14px;
+  }
+
+  .quantity-btn,
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .item-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .item-grid {
+    grid-template-columns: repeat(5, 1fr);
   }
 }
