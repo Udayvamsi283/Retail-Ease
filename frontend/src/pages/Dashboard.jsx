@@ -11,6 +11,7 @@ import {
   FaCog,
   FaCashRegister,
   FaReceipt,
+  FaCalendarAlt,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "../styles/Dashboard.css";
@@ -166,6 +167,19 @@ const Dashboard = () => {
           <div className="action-content">
             <h3>Receipts</h3>
             <p>View and manage sales receipts</p>
+          </div>
+        </Link>
+
+        <Link to="/expiry-insights" className="action-card">
+          <div
+            className="action-icon"
+            style={{ backgroundColor: "var(--primary)" }}
+          >
+            <FaCalendarAlt />
+          </div>
+          <div className="action-content">
+            <h3>Expiry Insights</h3>
+            <p>Manage products nearing expiry</p>
           </div>
         </Link>
 

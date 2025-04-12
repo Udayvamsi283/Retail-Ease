@@ -10,6 +10,7 @@ import {
   FaTimes,
   FaReceipt,
   FaCashRegister,
+  FaCalendarAlt,
 } from "react-icons/fa";
 import "../styles/Sidebar.css";
 
@@ -60,6 +61,19 @@ const Sidebar = ({ isOpen, toggleSidebar, onLogout }) => {
             >
               <FaReceipt className="sidebar-icon" />
               <span>Receipts</span>
+            </NavLink>
+          </li>
+
+          <li className="sidebar-item">
+            <NavLink
+              to="/expiry-insights"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
+              }
+              onClick={() => toggleSidebar()}
+            >
+              <FaCalendarAlt className="sidebar-icon" />
+              <span>Expiry Insights</span>
             </NavLink>
           </li>
 

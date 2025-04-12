@@ -12,6 +12,7 @@ import Inventory from "./pages/Inventory";
 import ProfitAnalysis from "./pages/ProfitAnalysis";
 import AIBusinessHelp from "./pages/AIBusinessHelp";
 import Settings from "./pages/Settings";
+import ExpiryInsights from "./pages/ExpiryInsights";
 import Billing from "./pages/Billing";
 import Receipts from "./pages/Receipts";
 import MainLayout from "./components/MainLayout";
@@ -84,12 +85,21 @@ function App() {
       />
 
       <Route
+        path="/expiry-insights"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <ExpiryInsights />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/ai-business-help"
         element={
           <ProtectedRoute>
             <MainLayout>
-              <AIBusinessHelp
-                currentUser={useAuth().currentUser} />
+              <AIBusinessHelp currentUser={useAuth().currentUser} />
             </MainLayout>
           </ProtectedRoute>
         }
