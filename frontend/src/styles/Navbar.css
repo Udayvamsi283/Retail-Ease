@@ -61,6 +61,7 @@
 .navbar-right {
   display: flex;
   align-items: center;
+  gap: 16px;
 }
 
 .user-profile {
@@ -85,6 +86,116 @@
   justify-content: center;
   font-weight: 600;
   font-size: 14px;
+}
+
+/* Notification Bell Styles */
+.notification-bell {
+  position: relative;
+}
+
+.bell-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.bell-button:hover {
+  background-color: var(--light-gray);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--primary);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 600;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 280px;
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.notification-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.notification-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.notification-content {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.no-notifications {
+  padding: 16px;
+  text-align: center;
+  color: var(--dark-gray);
+  font-size: 14px;
+}
+
+.notification-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notification-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--light-gray);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background-color: var(--light-gray);
+}
+
+.item-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.expiry-info {
+  font-size: 12px;
+  color: var(--primary);
 }
 
 @media (min-width: 768px) {

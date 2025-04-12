@@ -208,14 +208,18 @@ const InventoryForm = ({
           </div>
 
           <div className="form-group">
-            <label htmlFor="expiryDate">Expiry Date</label>
+            <label htmlFor="expiryDate">Expiry Date (Optional)</label>
             <input
               type="date"
               id="expiryDate"
               name="expiryDate"
               value={formData.expiryDate}
               onChange={handleChange}
+              placeholder="Optional"
             />
+            <small className="form-hint">
+              Leave empty for items without expiry date
+            </small>
           </div>
 
           <div className="form-group">
