@@ -60,12 +60,6 @@
   border-bottom: 1px solid var(--light-gray);
 }
 
-.coming-soon-text {
-  color: var(--dark-gray);
-  text-align: center;
-  padding: 40px 0;
-}
-
 @media (min-width: 768px) {
   .settings-container {
     flex-direction: row;

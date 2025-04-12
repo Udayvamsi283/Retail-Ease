@@ -225,3 +225,34 @@ textarea:focus {
   font-size: 14px;
   margin-top: 4px;
 }
+
+.danger-btn {
+  background-color: #dc3545;
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+}
+
+.danger-btn:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+}
+
+.success-message {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.user-profile {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.user-profile:hover {
+  transform: scale(1.05);
+}

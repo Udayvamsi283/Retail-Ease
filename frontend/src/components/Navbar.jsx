@@ -1,11 +1,13 @@
-"use client"
+"use client";
 
-import { useAuth } from "../contexts/AuthContext"
-import { FaBars, FaShoppingCart } from "react-icons/fa"
-import "../styles/Navbar.css"
+import { useAuth } from "../contexts/AuthContext";
+import { FaBars, FaShoppingCart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import "../styles/Navbar.css";
 
 const Navbar = ({ toggleSidebar }) => {
-  const { currentUser } = useAuth()
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
   // Function to get user initials
   const getUserInitials = () => {
@@ -14,10 +16,14 @@ const Navbar = ({ toggleSidebar }) => {
         .split(" ")
         .map((name) => name[0])
         .join("")
-        .toUpperCase()
+        .toUpperCase();
     }
-    return "U"
-  }
+    return "U";
+  };
+
+  const handleProfileClick = () => {
+    navigate("/settings/profile");
+  };
 
   return (
     <nav className="navbar">
@@ -33,9 +39,13 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
 
         <div className="navbar-right">
-          <div className="user-profile">
+          <div className="user-profile" onClick={handleProfileClick}>
             {currentUser?.photoURL ? (
-              <img src={currentUser.photoURL || "/placeholder.svg"} alt="User Profile" className="profile-image" />
+              <img
+                src={currentUser.photoURL || "/placeholder.svg"}
+                alt="User Profile"
+                className="profile-image"
+              />
             ) : (
               <div className="profile-initials">{getUserInitials()}</div>
             )}
@@ -43,7 +53,7 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

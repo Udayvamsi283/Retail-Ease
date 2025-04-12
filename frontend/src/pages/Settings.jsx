@@ -1,13 +1,35 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useAuth } from "../contexts/AuthContext"
-import { FaUser, FaStore, FaEnvelope, FaLock } from "react-icons/fa"
-import "../styles/Settings.css"
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { FaUser, FaStore, FaEnvelope, FaLock } from "react-icons/fa";
+import ProfileSettings from "../components/settings/ProfileSettings";
+import StoreDetails from "../components/settings/StoreDetails";
+import AccountSettings from "../components/settings/AccountSettings";
+import PasswordSettings from "../components/settings/PasswordSettings";
+import "../styles/Settings.css";
 
 const Settings = () => {
-  const { currentUser } = useAuth()
-  const [activeTab, setActiveTab] = useState("profile")
+  const { section } = useParams();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("profile");
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    // Set the active tab based on the URL parameter
+    if (section) {
+      setActiveTab(section);
+    } else {
+      // If no section is specified, redirect to profile
+      navigate("/settings/profile", { replace: true });
+    }
+  }, [section, navigate]);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    navigate(`/settings/${tab}`);
+  };
 
   return (
     <div className="settings-page">
@@ -17,7 +39,7 @@ const Settings = () => {
         <div className="settings-tabs">
           <button
             className={`tab-button ${activeTab === "profile" ? "active" : ""}`}
-            onClick={() => setActiveTab("profile")}
+            onClick={() => handleTabChange("profile")}
           >
             <FaUser className="tab-icon" />
             <span>Profile</span>
@@ -25,7 +47,7 @@ const Settings = () => {
 
           <button
             className={`tab-button ${activeTab === "store" ? "active" : ""}`}
-            onClick={() => setActiveTab("store")}
+            onClick={() => handleTabChange("store")}
           >
             <FaStore className="tab-icon" />
             <span>Store Details</span>
@@ -33,7 +55,7 @@ const Settings = () => {
 
           <button
             className={`tab-button ${activeTab === "account" ? "active" : ""}`}
-            onClick={() => setActiveTab("account")}
+            onClick={() => handleTabChange("account")}
           >
             <FaEnvelope className="tab-icon" />
             <span>Account</span>
@@ -41,7 +63,7 @@ const Settings = () => {
 
           <button
             className={`tab-button ${activeTab === "password" ? "active" : ""}`}
-            onClick={() => setActiveTab("password")}
+            onClick={() => handleTabChange("password")}
           >
             <FaLock className="tab-icon" />
             <span>Password</span>
@@ -49,37 +71,14 @@ const Settings = () => {
         </div>
 
         <div className="settings-content">
-          {activeTab === "profile" && (
-            <div className="settings-section">
-              <h2 className="section-title">Profile Settings</h2>
-              <p className="coming-soon-text">Profile settings will be available soon.</p>
-            </div>
-          )}
-
-          {activeTab === "store" && (
-            <div className="settings-section">
-              <h2 className="section-title">Store Details</h2>
-              <p className="coming-soon-text">Store settings will be available soon.</p>
-            </div>
-          )}
-
-          {activeTab === "account" && (
-            <div className="settings-section">
-              <h2 className="section-title">Account Settings</h2>
-              <p className="coming-soon-text">Account settings will be available soon.</p>
-            </div>
-          )}
-
-          {activeTab === "password" && (
-            <div className="settings-section">
-              <h2 className="section-title">Change Password</h2>
-              <p className="coming-soon-text">Password change functionality will be available soon.</p>
-            </div>
-          )}
+          {activeTab === "profile" && <ProfileSettings user={currentUser} />}
+          {activeTab === "store" && <StoreDetails user={currentUser} />}
+          {activeTab === "account" && <AccountSettings user={currentUser} />}
+          {activeTab === "password" && <PasswordSettings user={currentUser} />}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Settings
+export default Settings;
