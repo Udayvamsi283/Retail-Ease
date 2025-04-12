@@ -1,17 +1,29 @@
-import "../styles/AIBusinessHelp.css"
+import { useEffect, useRef } from "react"; import CryptoJS from "crypto-js"; import "../styles/AIBusinessHelp.css";
 
-const AIBusinessHelp = () => {
-  return (
-    <div className="ai-business-help">
-      <h1 className="page-title">AI Business Help</h1>
+const AIBusinessHelp = ({ currentUser }) => { const botContainerRef = useRef(null);
 
-      <div className="coming-soon">
-        <h2>Coming Soon!</h2>
-        <p>We're developing AI-powered business insights to help you grow your retail business.</p>
-        <p>This feature will provide personalized recommendations based on your inventory and sales data.</p>
-      </div>
-    </div>
-  )
+useEffect(() => { const userId = currentUser?.uid || "guest_user"; 
+const secret = "dbjin8z9tdvktq2dkm661iecb1uxkcjn"; // 🔐 Replace with your actual Chatbase secret 
+const hash = CryptoJS.HmacSHA256(userId, secret).toString();
+
+// Remove existing Chatbase iframe if any
+const existingFrame = document.getElementById("chatbase-frame");
+if (existingFrame) existingFrame.remove();
+
+// Create Chatbase iframe for full screen experience
+const iframe = document.createElement("iframe");
+iframe.src = `https://www.chatbase.co/chatbot-iframe/YqM2rVJeK1WB1LyvIDGy7?userId=${userId}&signature=${hash}`;
+iframe.width = "100%";
+iframe.height = "100%";
+iframe.style.border = "none";
+iframe.id = "chatbase-frame";
+
+if (botContainerRef.current) {
+  botContainerRef.current.innerHTML = ""; // Clear any old content
+  botContainerRef.current.appendChild(iframe);
 }
+}, [currentUser]);
 
-export default AIBusinessHelp
+return ( <div className="ai-chat-fullscreen"> <h1 className="page-title">AI Business Assistant </h1> <div ref={botContainerRef} className="chatbot-container" /> </div> ); };
+
+export default AIBusinessHelp;

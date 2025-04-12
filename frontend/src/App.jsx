@@ -88,7 +88,8 @@ function App() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <AIBusinessHelp />
+              <AIBusinessHelp
+                currentUser={useAuth().currentUser} />
             </MainLayout>
           </ProtectedRoute>
         }
